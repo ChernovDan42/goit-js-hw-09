@@ -1,14 +1,21 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
 
 
 const startBtn = document.querySelector('[data-start]')
-const input= document.querySelector('#datetime-picker')
+const input = document.querySelector('#datetime-picker')
+const daysRef = document.querySelector('[data-days]')
+const hoursRef = document.querySelector('[data-hours]')
+const minutesRef = document.querySelector('[data-minutes]')
+const secondsRef = document.querySelector('[data-seconds]')
+
+
 
 
 startBtn.setAttribute('disabled','')
 
-let pikedTime = null;
+
 
 const options = {
     enableTime: true,
@@ -18,27 +25,65 @@ const options = {
     onClose(selectedDates) {
      
         if (selectedDates[0] < Date.now()) {
-            window.alert("Please choose a date in the future");
-            startBtn.setAttribute('disabled', '')
+           Notiflix.Notify.failure("Please choose a date in the future");
+           
         } else {
-            pikedTime = new Date(input.value).getTime();
-            console.log(pikedTime);
+          Notiflix.Notify.success('Success');
+            // pikedTime = new Date(input.value).getTime();
             startBtn.removeAttribute('disabled');
       }
   },
 };
 
-flatpickr("#datetime-picker", options);
+const pickedTime = flatpickr("#datetime-picker", options);
+ 
 
 
+class Timer{
+  constructor({onTick}) {
+    this.isIactive = false;
+    this.intervalId = null;
+    this.onTick = onTick;
+  }
+
+  start() {
+    if (this.isActive) {
+      return
+    }
+    startBtn.setAttribute('disabled','')   
+    this.isActive = true;
 
 
+  
+    this.intervalId=setInterval(() => {
+      const startTime = Date.now();
+      const timeLeft=pickedTime.selectedDates[0].getTime()-startTime
+      let timeShow = this.convertMs(timeLeft)
+      const { days, hours, minutes, seconds } = timeShow;
 
+      if (days === '00' && hours==='00' && minutes==='00' && seconds==='00') {
+        this.stop(timeShow)
+      }
 
+      this.onTick(timeShow);
 
+    }, 1000)
+  }
 
+  stop(timeShow) {
+     clearInterval(this.intervalId)
+        timeShow=this.convertMs(0)
+        this.onTick(timeShow);
+        this.isActive = false;
+        Notiflix.Notify.success('Countdown finish!');
+        return
+  }
 
-function convertMs(ms) {
+  addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+}
+
+  convertMs(ms) {
   // Number of milliseconds per unit of time
   const second = 1000;
   const minute = second * 60;
@@ -46,16 +91,32 @@ function convertMs(ms) {
   const day = hour * 24;
 
   // Remaining days
-  const days = Math.floor(ms / day);
+  const days = this.addLeadingZero(Math.floor(ms / day));
   // Remaining hours
-  const hours = Math.floor((ms % day) / hour);
+  const hours = this.addLeadingZero(Math.floor((ms % day) / hour));
   // Remaining minutes
-  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const minutes = this.addLeadingZero(Math.floor(((ms % day) % hour) / minute));
   // Remaining seconds
-  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+  const seconds = this.addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
 
   return { days, hours, minutes, seconds };
 }
+}
+
+const timer = new Timer({ onTick: showTime })
+
+
+startBtn.addEventListener('click',timer.start.bind(timer))
+
+
+function showTime({ days, hours, minutes, seconds }) {
+  daysRef.textContent = days;
+  hoursRef.textContent = hours;
+  minutesRef.textContent = minutes;
+  secondsRef.textContent = seconds;
+  
+}
+
 
 
 
