@@ -8,15 +8,11 @@ btnStop.addEventListener('click',onBtnStop)
 
 
 btnStop.setAttribute('disabled','')
-// let isIntervalActive = false;
+
 let intervalId = null;
 
 function onBtnStart() {
-    // if (isIntervalActive) {
-    //     return;
-    // }
-
-    // isIntervalActive = true;
+   
     btnStop.removeAttribute('disabled')
     btnStart.setAttribute('disabled','')
      intervalId = setInterval(() => {
@@ -28,7 +24,7 @@ function onBtnStop() {
     clearInterval(intervalId)
     btnStop.setAttribute('disabled','')
     btnStart.removeAttribute('disabled')
-    isIntervalActive = false;
+   
 }
 
 

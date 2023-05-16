@@ -42,6 +42,7 @@ class Timer{
     this.isIactive = false;
     this.intervalId = null;
     this.onTick = onTick;
+   
   }
 
   start() {
@@ -56,7 +57,7 @@ class Timer{
     this.intervalId=setInterval(() => {
       const startTime = Date.now();
       const timeLeft=pickedTime.selectedDates[0].getTime()-startTime
-      let timeShow = this.convertMs(timeLeft)
+      let timeShow = this.convertMs(timeLeft);
       const { days, hours, minutes, seconds } = timeShow;
 
       if (days === '00' && hours==='00' && minutes==='00' && seconds==='00') {
