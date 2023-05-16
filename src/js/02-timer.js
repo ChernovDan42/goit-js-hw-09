@@ -4,7 +4,6 @@ import Notiflix from 'notiflix';
 
 
 const startBtn = document.querySelector('[data-start]')
-const input = document.querySelector('#datetime-picker')
 const daysRef = document.querySelector('[data-days]')
 const hoursRef = document.querySelector('[data-hours]')
 const minutesRef = document.querySelector('[data-minutes]')
@@ -29,7 +28,6 @@ const options = {
            
         } else {
           Notiflix.Notify.success('Success');
-            // pikedTime = new Date(input.value).getTime();
             startBtn.removeAttribute('disabled');
       }
   },
@@ -63,6 +61,7 @@ class Timer{
 
       if (days === '00' && hours==='00' && minutes==='00' && seconds==='00') {
         this.stop(timeShow)
+        return
       }
 
       this.onTick(timeShow);
@@ -76,7 +75,7 @@ class Timer{
         this.onTick(timeShow);
         this.isActive = false;
         Notiflix.Notify.success('Countdown finish!');
-        return
+       
   }
 
   addLeadingZero(value) {
