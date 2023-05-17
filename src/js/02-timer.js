@@ -58,9 +58,9 @@ class Timer{
       const startTime = Date.now();
       const timeLeft=pickedTime.selectedDates[0].getTime()-startTime
       let timeShow = this.convertMs(timeLeft);
-      const { days, hours, minutes, seconds } = timeShow;
+      
 
-      if (days === '00' && hours==='00' && minutes==='00' && seconds==='00') {
+      if (timeLeft<0) {
         this.stop(timeShow)
         return
       }
